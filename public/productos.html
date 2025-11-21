@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Listado de productos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body { font-family: system-ui, Arial, sans-serif; margin: 24px; color: #222; }
+    h1 { margin-bottom: 12px; }
+    .actions { margin: 12px 0 20px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 10px; border-bottom: 1px solid #ddd; text-align: left; }
+    th { background: #f6f6f6; }
+    .price { font-weight: 600; }
+    .empty { margin-top: 16px; color: #666; }
+    .error { color: #b00020; margin-top: 12px; }
+    .loading { color: #555; }
+  </style>
+</head>
+<body>
+  <h1>Productos</h1>
+
+  <div class="actions">
+    <button id="reload">Recargar</button>
+    <span id="status" class="loading" aria-live="polite"></span>
+  </div>
+
+  <table aria-describedby="status">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Marca</th>
+        <th>Categoría</th>
+        <th>Precio</th>
+        <th>Descripción</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+
+  <p id="empty" class="empty" style="display:none;">No hay productos disponibles.</p>
+  <p id="error" class="error" style="display:none;"></p>
+
+  <script>
+    const API_URL = '/api/productos';
+    const tbody = document.getElementById('tbody');
+    const statusEl = document.getElementById('status');
+    const emptyEl = document.getElementById('empty');
+    const errorEl = document.getElementById('error');
+    const reloadBtn = document.getElementById('reload');
+
+    async function cargarProductos() {
+      statusEl.textContent = 'Cargando...';
+      errorEl.style.display = 'none';
+      emptyEl.style.display = 'none';
+      tbody.innerHTML = '';
+
+      try {
+        const res = await fetch(API_URL);
+        if (!res.ok) throw new Error('Error al obtener productos (' + res.status + ')');
+        const productos = await res.json();
+
+        if (!productos || productos.length === 0) {
+          emptyEl.style.display = 'block';
+          statusEl.textContent = '';
+          return;
+        }
+
+        const rows = productos.map(p => {
+          const precio = typeof p.precio === 'number' ? `$ ${p.precio.toFixed(2)}` : '-';
+          return `
+            <tr>
+              <td>${p._id ?? ''}</td>
+              <td>${p.nombre ?? ''}</td>
+              <td>${p.marca ?? ''}</td>
+              <td>${p.categoria ?? ''}</td>
+              <td class="price">${precio}</td>
+              <td>${p.descripcion ?? ''}</td>
+            </tr>
+          `;
+        }).join('');
+
+        tbody.innerHTML = rows;
+        statusEl.textContent = `Total: ${productos.length}`;
+      } catch (err) {
+        errorEl.textContent = err.message;
+        errorEl.style.display = 'block';
+        statusEl.textContent = '';
+      }
+    }
+
+    reloadBtn.addEventListener('click', cargarProductos);
+    cargarProductos();
+  </script>
+</body>
+</html>

@@ -7,13 +7,20 @@ services:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
+    restart: always
 
   app:
     build: .
+    container_name: node-web-hiraoka
     ports:
       - "3000:3000"
     depends_on:
       - mongo
+    volumes:
+      - .:/usr/src/app
+    working_dir: /usr/src/app
+    command: ["node", "index.js"]
+    restart: always
 
 volumes:
   mongo_data:
