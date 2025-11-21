@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
 const reseñaSchema = new mongoose.Schema({
-  producto_id: { type: Number, ref: 'Producto', required: true },
-  usuario_id: { type: String, ref: 'Usuario', required: true },
+  producto_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Producto', required: true },
+  usuario_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Usuario', required: true },
   calificacion: { type: Number, required: true, min: 0, max: 5 },
   titulo: { type: String, required: true },
   texto: { type: String, required: true },
