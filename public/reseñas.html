@@ -1,55 +1,167 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Reseñas de Productos</title>
+  <meta charset="UTF-8" />
+  <title>Reseñas y comentarios</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    table { border-collapse: collapse; width: 100%; }
-    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; vertical-align: top; }
-    img { max-width: 100px; margin: 4px; }
+    :root { color-scheme: light dark; }
+    body { font-family: system-ui, Arial, sans-serif; margin: 24px; line-height: 1.4; }
+    h1 { margin-bottom: 16px; }
+    .actions { margin-bottom: 16px; }
+    .reseña { border: 1px solid #ddd; border-radius: 8px; padding: 14px; margin-bottom: 16px; }
+    .header { display: flex; gap: 12px; align-items: baseline; }
+    .title { font-size: 1.1rem; font-weight: 600; }
+    .meta { color: #666; font-size: 0.9rem; }
+    .rating { font-weight: 600; color: #1a73e8; }
+    .imgs { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+    .imgs img { max-width: 160px; border-radius: 6px; border: 1px solid #ddd; }
+    .texto { margin-top: 8px; }
+    .comentarios { margin-top: 12px; padding-top: 10px; border-top: 1px dashed #ddd; }
+    .comentario { padding: 8px 0; border-bottom: 1px solid #eee; }
+    .comentario:last-child { border-bottom: none; }
+    .c-meta { color: #666; font-size: 0.85rem; }
+    .reacciones { margin-top: 4px; font-size: 0.95rem; }
+    .empty { color: #666; font-style: italic; }
+    .error { color: #b00020; margin-top: 12px; }
+    .loading { color: #555; }
+    button { padding: 6px 10px; }
   </style>
 </head>
 <body>
-  <h1>Reseñas de Productos</h1>
-  <table id="tabla-reseñas">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Producto</th>
-        <th>Usuario</th>
-        <th>Calificación</th>
-        <th>Título</th>
-        <th>Texto</th>
-        <th>Imágenes</th>
-        <th>Fecha</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+  <h1>Reseñas</h1>
+
+  <div class="actions">
+    <button id="reload">Recargar</button>
+    <span id="status" class="loading" aria-live="polite"></span>
+  </div>
+
+  <div id="list"></div>
+  <p id="error" class="error" style="display:none;"></p>
 
   <script>
-    fetch('/api/reseñas')
-      .then(res => res.json())
-      .then(data => {
-        const tbody = document.querySelector('#tabla-reseñas tbody');
-        data.forEach(r => {
-          const fila = document.createElement('tr');
-          fila.innerHTML = `
-            <td>${r._id}</td>
-            <td>${r.producto_id}</td>
-            <td>${r.usuario_id}</td>
-            <td>${r.calificacion}</td>
-            <td>${r.titulo}</td>
-            <td>${r.texto}</td>
-            <td>${r.imagenes.map(url => `<img src="${url}" />`).join('')}</td>
-            <td>${new Date(r.fecha_creacion).toLocaleString()}</td>
-          `;
-          tbody.appendChild(fila);
-        });
-      })
-      .catch(err => {
-        console.error('Error al cargar reseñas:', err);
-      });
+    const API_RESEÑAS = '/api/resenas';
+    const API_COMENTARIOS = '/api/comentarios';
+    const API_REACCIONES = '/api/reacciones';
+
+    const listEl = document.getElementById('list');
+    const statusEl = document.getElementById('status');
+    const errorEl = document.getElementById('error');
+    const reloadBtn = document.getElementById('reload');
+
+    function fmtDate(d) {
+      try {
+        return new Date(d).toLocaleString();
+      } catch { return ''; }
+    }
+
+    function esc(s) {
+      return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+
+    async function fetchJSON(url) {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`Error ${res.status} al obtener ${url}`);
+      return res.json();
+    }
+
+    async function cargarReaccionesComentario(comentarioId) {
+      try {
+        const qs = `?elemento_tipo=comentario&elemento_id=${encodeURIComponent(comentarioId)}`;
+        const data = await fetchJSON(`${API_REACCIONES}${qs}`);
+        const likes = data.filter(r => r.tipo === 'like').length;
+        const dislikes = data.filter(r => r.tipo === 'dislike').length;
+        return { likes, dislikes };
+      } catch {
+        return { likes: 0, dislikes: 0 };
+      }
+    }
+
+    async function cargarComentariosReseña(reseñaId) {
+      try {
+        const qs = `?reseña_id=${encodeURIComponent(reseñaId)}`;
+        const comentarios = await fetchJSON(`${API_COMENTARIOS}${qs}`);
+        // Obtener reacciones por comentario en paralelo
+        const withReactions = await Promise.all(comentarios.map(async c => {
+          const rx = await cargarReaccionesComentario(c._id);
+          return { ...c, _rx: rx };
+        }));
+        return withReactions;
+      } catch {
+        return [];
+      }
+    }
+
+    function renderReseñaCard(r, comentarios) {
+      const imgs = Array.isArray(r.imagenes) ? r.imagenes : [];
+      const producto = r.producto?.nombre || r.producto_id || 'Producto';
+      const usuario = r.usuario?.nombre_usuario || r.usuario_id || 'Usuario';
+      const imgsHTML = imgs.length
+        ? `<div class="imgs">${imgs.map(src => `<img alt="imagen reseña" src="${esc(src)}" />`).join('')}</div>`
+        : '';
+
+      const comentariosHTML = comentarios.length
+        ? comentarios.map(c => `
+            <div class="comentario">
+              <div class="c-meta"><strong>${esc(c.usuario?.nombre_usuario || c.usuario_id || 'Usuario')}:</strong> <span>${fmtDate(c.fecha_creacion)}</span></div>
+              <div class="c-texto">${esc(c.texto)}</div>
+              <div class="reacciones">
+                👍 ${c._rx.likes} &nbsp;&nbsp; ❌ ${c._rx.dislikes}
+              </div>
+            </div>
+          `).join('')
+        : `<div class="empty">Sin comentarios.</div>`;
+
+      return `
+        <div class="reseña">
+          <div class="header">
+            <div class="title">${esc(r.titulo || 'Reseña')}</div>
+            <div class="rating">★ ${typeof r.calificacion === 'number' ? r.calificacion.toFixed(1) : '-'}</div>
+          </div>
+          <div class="meta">${esc(producto)} • por ${esc(usuario)} • ${fmtDate(r.fecha_creacion)}</div>
+          <div class="texto">${esc(r.texto || '')}</div>
+          ${imgsHTML}
+          <div class="comentarios">
+            <div class="c-meta"><strong>Comentarios</strong></div>
+            ${comentariosHTML}
+          </div>
+        </div>
+      `;
+    }
+
+    async function cargarTodo() {
+      statusEl.textContent = 'Cargando reseñas...';
+      errorEl.style.display = 'none';
+      listEl.innerHTML = '';
+
+      try {
+        console.log("Legoooo :)")
+        const reseñas = await fetchJSON(API_RESEÑAS);
+        console.log("XDDDD")
+
+        if (!reseñas || reseñas.length === 0) {
+          listEl.innerHTML = '<p class="empty">No hay reseñas disponibles.</p>';
+          statusEl.textContent = '';
+          return;
+        }
+
+        // Para cada reseña, cargar sus comentarios y reacciones
+        const contenido = await Promise.all(reseñas.map(async r => {
+          const comentarios = await cargarComentariosReseña(r._id);
+          return renderReseñaCard(r, comentarios);
+        }));
+
+        listEl.innerHTML = contenido.join('');
+        statusEl.textContent = `Total reseñas: ${reseñas.length}`;
+      } catch (err) {
+        errorEl.textContent = err.message;
+        errorEl.style.display = 'block';
+        statusEl.textContent = '';
+      }
+    }
+
+    reloadBtn.addEventListener('click', cargarTodo);
+    cargarTodo();
   </script>
 </body>
 </html>

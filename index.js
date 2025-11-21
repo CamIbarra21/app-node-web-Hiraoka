@@ -16,14 +16,14 @@ mongoose.connect('mongodb://mongo:27017/DB_Caso_Hiraoka')
 // Importar rutas
 const usuarioRoutes = require('./routes/usuarios');
 const productoRoutes = require('./routes/productos');
-const reseñaRoutes = require('./routes/reseñas');
+const resenaRoutes = require('./routes/resenas');
 const comentarioRoutes = require('./routes/comentarios');
 const reaccionRoutes = require('./routes/reacciones');
 
 // Usar rutas API
 app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/productos', productoRoutes);
-app.use('/api/reseñas', reseñaRoutes);
+app.use('/api/resenas', resenaRoutes);
 app.use('/api/comentarios', comentarioRoutes);
 app.use('/api/reacciones', reaccionRoutes);
 

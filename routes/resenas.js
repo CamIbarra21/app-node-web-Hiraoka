@@ -16,7 +16,7 @@ router.post('/', async (req, res) => {
 // Obtener todas las reseñas
 router.get('/', async (req, res) => {
   try {
-    const reseñas = await Reseña.find();
+    const reseñas = await Reseña.find().populate('usuario_id').populate('producto_id');
     res.json(reseñas);
   } catch (err) {
     res.status(500).json({ error: err.message });
