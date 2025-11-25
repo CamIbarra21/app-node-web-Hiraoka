@@ -20,6 +20,17 @@ const resenaRoutes = require('./routes/resenas');
 const comentarioRoutes = require('./routes/comentarios');
 const reaccionRoutes = require('./routes/reacciones');
 
+const authRoutes = require('./routes/auth');
+const authMiddleware = require('./middleware/auth');
+
+// Autentificación
+app.use('/api/auth', authRoutes);
+
+//Ruta protegida
+app.get('/api/privado', authMiddleware, (req, res) => {
+  res.json({ message: `Bienvenido usuario ${req.userId}` });
+});
+
 // Usar rutas API
 app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/productos', productoRoutes);

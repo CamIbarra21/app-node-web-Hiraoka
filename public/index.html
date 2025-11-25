@@ -14,5 +14,42 @@
     <a href="./productos.html">🛒 Ver Productos</a>
     <a href="./usuarios.html">👤 Ver Usuarios</a>
   </div>
+
+  <!-- Botones iniciales -->
+  <div id="auth-buttons">
+    <button id="btn-show-register">Crear cuenta</button>
+    <button id="btn-show-login">Iniciar sesión</button>
+  </div>
+
+  <!-- Formulario de registro -->
+  <div id="register-form" style="display:none;">
+    <h2>Crear cuenta</h2>
+    <form id="form-register">
+      <input type="text" id="reg-nombre" placeholder="Nombre" required><br>
+      <input type="email" id="reg-email" placeholder="Email" required><br>
+      <input type="password" id="reg-password" placeholder="Contraseña" required><br>
+      <button type="submit">Registrarse</button>
+      <button type="button" id="btn-cancel-register">Cancelar</button>
+    </form>
+  </div>
+
+  <!-- Formulario de login -->
+  <div id="login-form" style="display:none;">
+    <h2>Iniciar sesión</h2>
+    <form id="form-login">
+      <input type="email" id="login-email" placeholder="Email" required><br>
+      <input type="password" id="login-password" placeholder="Contraseña" required><br>
+      <button type="submit">Entrar</button>
+      <button type="button" id="btn-cancel-login">Cancelar</button>
+    </form>
+  </div>
+
+  <!-- Info de usuario -->
+  <div id="user-info" style="display:none;">
+    <p>👋 Hola, <span id="username"></span></p>
+    <button id="btn-logout">Cerrar sesión</button>
+  </div>
+
+  <script src="app.js"></script>
 </body>
 </html>
