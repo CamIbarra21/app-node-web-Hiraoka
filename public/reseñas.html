@@ -77,6 +77,18 @@
       }
     }
 
+    async function cargarReaccionesReseña(reseñaId) {
+      try {
+        const qs = `?elemento_tipo=reseña&elemento_id=${encodeURIComponent(reseñaId)}`;
+        const data = await fetchJSON(`${API_REACCIONES}${qs}`);
+        const likes = data.filter(r => r.tipo === 'like').length;
+        const dislikes = data.filter(r => r.tipo === 'dislike').length;
+        return { likes, dislikes };
+      } catch {
+        return { likes: 0, dislikes: 0 };
+      }
+    }
+
     async function cargarComentariosReseña(reseñaId) {
       try {
         const qs = `?reseña_id=${encodeURIComponent(reseñaId)}`;
@@ -92,7 +104,7 @@
       }
     }
 
-    function renderReseñaCard(r, comentarios) {
+    function renderReseñaCard(r, comentarios, reacciones) {
       const imgs = Array.isArray(r.imagenes) ? r.imagenes : [];
       const producto = r.producto?.nombre || r.producto_id || 'Producto';
       const usuario = r.usuario?.nombre_usuario || r.usuario_id || 'Usuario';
@@ -112,6 +124,22 @@
           `).join('')
         : `<div class="empty">Sin comentarios.</div>`;
 
+
+      // Formulario de comentario (solo si hay token)
+      const token = localStorage.getItem("token");
+      const reaccionBtns = token ? `
+        <div class="acciones-reaccion" data-reseña="${r._id}">
+          <button class="btn-like" data-tipo="like">👍 Like</button>
+          <button class="btn-dislike" data-tipo="dislike">❌ Dislike</button>
+        </div>
+      ` : '';
+      const formHTML = token ? `
+        <form class="form-comentario" data-reseña="${r._id}">
+          <input type="text" name="texto" placeholder="Escribe un comentario..." required />
+          <button type="submit">Comentar</button>
+        </form>
+      ` : '';
+
       return `
         <div class="reseña">
           <div class="header">
@@ -120,13 +148,19 @@
           </div>
           <div class="meta">${esc(producto)} • por ${esc(usuario)} • ${fmtDate(r.fecha_creacion)}</div>
           <div class="texto">${esc(r.texto || '')}</div>
+          <div class="reacciones">
+            👍 ${reacciones.likes} &nbsp;&nbsp; ❌ ${reacciones.dislikes}
+          </div>
           ${imgsHTML}
+          ${reaccionBtns}
           <div class="comentarios">
             <div class="c-meta"><strong>Comentarios</strong></div>
             ${comentariosHTML}
+            ${formHTML}
           </div>
         </div>
       `;
+
     }
 
     async function cargarTodo() {
@@ -148,7 +182,8 @@
         // Para cada reseña, cargar sus comentarios y reacciones
         const contenido = await Promise.all(reseñas.map(async r => {
           const comentarios = await cargarComentariosReseña(r._id);
-          return renderReseñaCard(r, comentarios);
+          const reacciones = await cargarReaccionesReseña(r._id);
+          return renderReseñaCard(r, comentarios, reacciones);
         }));
 
         listEl.innerHTML = contenido.join('');
@@ -159,6 +194,66 @@
         statusEl.textContent = '';
       }
     }
+
+    // Delegación de eventos para formularios de comentario
+    document.addEventListener("submit", async (e) => {
+      if (e.target.classList.contains("form-comentario")) {
+        e.preventDefault();
+        const reseñaId = e.target.dataset.reseña;
+        const texto = e.target.querySelector("input[name='texto']").value;
+        const token = localStorage.getItem("token");
+
+        try {
+          const res = await fetch(API_COMENTARIOS, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": token
+            },
+            body: JSON.stringify({ reseña_id: reseñaId, texto })
+          });
+
+          const data = await res.json();
+          if (res.ok) {
+            alert("Comentario agregado");
+            cargarTodo(); // recargar reseñas y comentarios
+          } else {
+            alert(data.error || "Error al comentar");
+          }
+        } catch (err) {
+          alert("Error de red");
+        }
+      }
+    });
+
+    document.addEventListener("click", async (e) => {
+      if (e.target.classList.contains("btn-like") || e.target.classList.contains("btn-dislike")) {
+        const tipo = e.target.dataset.tipo;
+        const reseñaId = e.target.closest(".acciones-reaccion").dataset.reseña;
+        const token = localStorage.getItem("token");
+
+        try {
+          const res = await fetch(API_REACCIONES, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": token
+            },
+            body: JSON.stringify({ elemento_id: reseñaId, elemento_tipo: "reseña", tipo })
+          });
+
+          const data = await res.json();
+          if (res.ok) {
+            alert("Reacción registrada");
+            cargarTodo(); // recargar reseñas
+          } else {
+            alert(data.error || "Error al reaccionar");
+          }
+        } catch {
+          alert("Error de red");
+        }
+      }
+    });
 
     reloadBtn.addEventListener('click', cargarTodo);
     cargarTodo();

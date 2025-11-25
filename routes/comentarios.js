@@ -1,11 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const Comentario = require('../modules/Comentario');
+const authMiddleware = require('../middleware/auth');
 
 // Crear comentario
-router.post('/', async (req, res) => {
+router.post('/', authMiddleware, async (req, res) => {
   try {
-    const comentario = new Comentario(req.body);
+    const comentario = new Comentario({
+      reseña_id: req.body.reseña_id,
+      usuario_id: req.userId,
+      texto: req.body.texto
+    });
     await comentario.save();
     res.status(201).json(comentario);
   } catch (err) {
@@ -13,10 +18,11 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Obtener todos los comentarios
+// Obtener comentarios por reseña
 router.get('/', async (req, res) => {
   try {
-    const comentarios = await Comentario.find();
+    const { reseña_id } = req.query;
+    const comentarios = await Comentario.find({ reseña_id }).populate('usuario_id');
     res.json(comentarios);
   } catch (err) {
     res.status(500).json({ error: err.message });
