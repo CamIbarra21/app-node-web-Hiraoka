@@ -1,55 +1,131 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Hiraoka - Inicio</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hiraoka - Tecnología y Hogar</title>
+    <!-- Fuente moderna -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Iconos FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <!-- Tu CSS -->
+    <link rel="stylesheet" href="./css/styles.css">
 </head>
 <body>
-  <h1>¡Bienvenido a Hiraoka!</h1>
-  <p>Comparte tus reseñas de tus compras y explora la experiencia de otros usuarios.</p>
+    <!-- Barra superior -->
+    <div class="top-bar">
+        ¡SOLO OFERTAS! Encuentra las mejores ofertas en LAPTOPS para el Trabajo, Estudios o Gamer
+    </div>
 
-  <div class="menu">
-    <a href="./reseñas.html">📋 Ver Reseñas</a>
-    <a href="./productos.html">🛒 Ver Productos</a>
-    <a href="./usuarios.html">👤 Ver Usuarios</a>
-  </div>
+    <!-- Header principal -->
+    <header class="main-header">
+        <div class="container header-container">
+            <!-- Logo -->
+            <div class="logo-box">
+                <a href="/">
+                    <img src="./img/logo.webp" 
+                        alt="Hiraoka Logo" 
+                        class="logo">
+                </a>
+            </div>
 
-  <!-- Botones iniciales -->
-  <div id="auth-buttons">
-    <button id="btn-show-register">Crear cuenta</button>
-    <button id="btn-show-login">Iniciar sesión</button>
-  </div>
+            <!-- Buscador -->
+            <div class="search-bar">
+                <input type="text" placeholder="¿Qué buscas?">
+                <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
+                <button class="voice-search-btn"><i class="fas fa-microphone"></i></button>
+            </div>
 
-  <!-- Formulario de registro -->
-  <div id="register-form" style="display:none;">
-    <h2>Crear cuenta</h2>
-    <form id="form-register">
-      <input type="text" id="reg-nombre" placeholder="Nombre" required><br>
-      <input type="email" id="reg-email" placeholder="Email" required><br>
-      <input type="password" id="reg-password" placeholder="Contraseña" required><br>
-      <button type="submit">Registrarse</button>
-      <button type="button" id="btn-cancel-register">Cancelar</button>
-    </form>
-  </div>
+            <!-- Acciones de usuario -->
+            <nav class="user-actions">
+              <!-- Estado no logueado -->
+              <div id="guest-actions">
+                <a href="./login.html"><i class="fas fa-sign-in-alt"></i> Ingresar</a>
+                <span class="separator">|</span>
+                <a href="./register.html"><i class="fas fa-user-plus"></i> Crear cuenta</a>
+                <span class="separator">|</span>
+              </div>
 
-  <!-- Formulario de login -->
-  <div id="login-form" style="display:none;">
-    <h2>Iniciar sesión</h2>
-    <form id="form-login">
-      <input type="email" id="login-email" placeholder="Email" required><br>
-      <input type="password" id="login-password" placeholder="Contraseña" required><br>
-      <button type="submit">Entrar</button>
-      <button type="button" id="btn-cancel-login">Cancelar</button>
-    </form>
-  </div>
+              <!-- Estado logueado -->
+              <div id="user-info" style="display:none;">
+                <span class="welcome-msg"><b>Bienvenido,</b><br><em><span id="username"></span></em></span>
+                <span class="separator">|</span>
+                <a href="#" id="btn-logout"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+                <span class="separator">|</span>
+              </div>
 
-  <!-- Info de usuario -->
-  <div id="user-info" style="display:none;">
-    <p>👋 Hola, <span id="username"></span></p>
-    <button id="btn-logout">Cerrar sesión</button>
-  </div>
+              <!-- Carrito -->
+              <a href="#"><i class="fas fa-shopping-cart"></i> Mi carrito <span class="cart-count">0</span></a>
+            </nav>
+        </div>
 
-  <script src="app.js"></script>
+        <!-- Navegación secundaria -->
+        <nav class="secondary-nav container">
+            <a href="./reseñas.html">Nuestras reseñas</a>
+            <a href="./productos.html">Catálogo</a>
+            <a href="./usuarios.html">Usuarios</a>
+            <a href="#">☎ (01) 000-3000</a>
+        </nav>
+    </header>
+
+    <!-- Banner Interbank -->
+    <div class="interbank-banner">
+        <div class="container interbank-content">
+            Paga en 6, 9 o 12 cuotas* sin intereses solo con Tarjetas de Crédito Interbank para compras desde S/ 1,299
+        </div>
+    </div>
+
+    <!-- Slider principal -->
+    <section class="main-banner-slider">
+        <div class="banner-slide active">
+            <div class="container banner-content">
+                <div class="image-side">
+                    <a href="#" class="banner-link">
+                        <img src="./img/banner.webp" 
+                            alt="iPhone 17 PRO" 
+                            class="iphone-image">
+                    </a>
+                </div>
+            </div>
+            <button class="slider-arrow left-arrow"><i class="fas fa-arrow-left"></i></button>
+            <button class="slider-arrow right-arrow"><i class="fas fa-arrow-right"></i></button>
+            <div class="slider-dots"></div>
+        </div>
+    </section>
+
+    <!-- Quick links -->
+    <section class="quick-links">
+        <div class="container quick-links-content">
+            <p>¡Encuentra las mejores marcas de:</p>
+            <a href="#" class="quick-link red-link">Celulares</a>
+            <span class="and-separator">y</span>
+            <a href="#" class="quick-link red-link">Smartphones</a>
+        </div>
+    </section>
+
+    <!-- Main -->
+    <main>
+        <section class="category-circles container">
+            <h2 class="section-title">Encuentra lo que necesitas</h2>
+            <div id="circles-grid" class="circles-grid"></div>
+        </section>
+        
+        <hr class="section-divider">
+
+        <section class="featured-offers container">
+            <h2 class="section-title">🔥¡Aprovecha nuestras mejores ofertas!🔥</h2>
+            <div id="products-grid" class="products-grid"></div>
+        </section>
+
+
+    </main>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Hiraoka. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+    <script src="./script/script.js"></script>
 </body>
 </html>
