@@ -58,8 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
           console.log("Resultado: ", data.usuario?.nombre_usuario);
           localStorage.setItem("username", data.usuario?.nombre_usuario || email);
           alert("Login exitoso ✅");
-          // Redirige a una ruta protegida o dashboard
-          window.location.href = "../reseñas.html";
+          window.location.href = "/";
         } else {
           alert(data.error || "Error al iniciar sesión");
         }

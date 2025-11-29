@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Producto - Hiraoka</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="./css/styles.css"> 
+    <link rel="stylesheet" href="./css/product_detail.css"> 
+</head>
+<body>
+    <div class="top-bar">
+        ¡SOLO OFERTAS! Encuentra las mejores ofertas en LAPTOPS para el Trabajo, Estudios o Gamer
+    </div>
+    <header class="main-header">
+        <div class="container header-container">
+            <div class="logo-box">
+                <a href="/">
+                    <img src="./img/logo.webp" alt="Hiraoka Logo" class="logo">
+                </a>
+            </div>
+            <div class="search-bar">
+                <input type="text" placeholder="¿Qué buscas?">
+                <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
+                <button class="voice-search-btn"><i class="fas fa-microphone"></i></button>
+            </div>
+            <nav class="user-actions">
+                 <div id="guest-actions">
+                    <a href="./login.html"><i class="fas fa-sign-in-alt"></i> Ingresar</a>
+                    <span class="separator">|</span>
+                    <a href="./register.html"><i class="fas fa-user-plus"></i> Crear cuenta</a>
+                    <span class="separator">|</span>
+                  </div>
+                  <div id="user-info" style="display:none;">
+                    <span class="welcome-msg"><b>Bienvenido,</b><br><em><span id="username"></span></em></span>
+                    <span class="separator">|</span>
+                    <a href="#" id="btn-logout"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+                    <span class="separator">|</span>
+                  </div>
+                <a href="#"><i class="fas fa-shopping-cart"></i> Mi carrito <span class="cart-count">0</span></a>
+            </nav>
+        </div>
+        <nav class="secondary-nav container">
+            <a href="./reseñas.html">Nuestras reseñas</a>
+            <a href="./productos.html">Catálogo</a>
+            <a href="./usuarios.html">Usuarios</a>
+            <a href="#">☎ (01) 000-3000</a>
+        </nav>
+    </header>
+    <div class="product-page-container">
+        <div class="container breadcrumbs">
+            <a href="/">Hiraoka.com.pe</a> / 
+            <span id="breadcrumb-category"></span> / 
+            <span id="breadcrumb-product-name"></span>
+        </div>
+        
+        <main class="product-detail-layout container">
+            
+            <section class="product-gallery-section">
+                
+                <div class="thumbnail-list" id="thumbnail-list">
+                    <div class="scroll-indicator"><i class="fas fa-chevron-down"></i></div>
+                </div>
+                
+                <div class="main-image-box">
+                    <button class="gallery-arrow left-arrow"><i class="fas fa-chevron-left"></i></button>
+                    <img id="main-product-image" src="./img/placeholder.png" alt="Imagen principal del producto">
+                    <button class="gallery-arrow right-arrow"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </section>
+
+            <section class="product-info-section">
+                <p class="product-brand" id="product-brand">MARCA...</p>
+                <h1 class="product-title" id="product-title">Cargando Producto...</h1>
+                <p class="product-model-code" id="product-model">MODELO...</p>
+
+                <div class="payment-banner">
+                    Ahora puedes pagar también usando **PagoEfectivo**
+                    <img src="./img/pagoefectivo_icon.png" alt="PagoEfectivo" class="payment-icon-small">
+                </div>
+
+                <p class="product-code-display">Código: <strong id="product-id">...</strong></p>
+
+                <div class="price-section-new">
+                    <div class="current-price-box">
+                        <p class="current-price-label-new">PRECIO</p>
+                        <p class="current-price-new" id="product-price">S/ --</p>
+                    </div>
+                    <p class="regular-price-new" id="regular-price" style="display:none;">Precio regular: S/ --</p>
+                </div>
+                
+                <div class="stock-info-new">
+                    <p class="available-stock-new" id="stock-info">
+                        <i class="fas fa-box"></i> Stock Web: **--** unidades
+                    </p>
+                </div>
+
+                <div class="action-section-new">
+                    <div class="quantity-selector-new">
+                        <label for="quantity">Cantidad</label>
+                        <button type="button" class="qty-btn-new" id="minus-qty">-</button>
+                        <input type="number" id="quantity" value="1" min="1" max="10" readonly>
+                        <button type="button" class="qty-btn-new" id="plus-qty">+</button>
+                    </div>
+                    
+                </div>
+                
+                <hr class="separator-line-new">
+
+                <div class="delivery-info-new">
+                    <p class="delivery-title">Disponibilidad y tiempos de entrega</p>
+                    <p class="delivery-option-new available">
+                        <i class="fas fa-check-circle"></i> Disponible para despacho a domicilio
+                    </p>
+                    <p class="delivery-option-new available">
+                        <i class="fas fa-check-circle"></i> Disponible para retiro en tu tienda seleccionada
+                    </p>
+                </div>
+                
+                <div class="share-links-new">
+                    <p>Comparte este producto</p>
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-pinterest-p"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+
+                <section class="product-detail-description">
+                    <h2 class="description-title">Características Detalladas</h2>
+                    <p class="description-content" id="product-description">
+                        No hay descripción detallada disponible para este producto.
+                    </p>
+                </section>
+            </section>
+        </main>
+
+        <section class="product-reviews-section container">
+        <hr class="section-divider">
+        <h2 class="section-title-reviews">⭐ Opiniones de clientes y Reseñas (0)</h2>
+        <div id="review-summary">
+            <p>Aún no hay reseñas. ¡Sé el primero en dejar tu opinión!</p>
+        </div>
+        
+        <div id="review-list">
+            </div>
+
+        <div id="review-form-container">
+            <h3 class="form-title">Deja tu reseña</h3>
+            <p id="auth-warning" style="color: #E30613; display:none;">Debes <a href="./login.html">iniciar sesión</a> para dejar una reseña.</p>
+            <form id="form-new-review" style="display:none;">
+                <label for="calificacion">Calificación (0-5):</label>
+                <input type="number" id="calificacion" min="0" max="5" required>
+                
+                <label for="titulo">Título:</label>
+                <input type="text" id="titulo" required>
+                
+                <label for="texto-resena">Tu opinión:</label>
+                <textarea id="texto-resena" required></textarea>
+                
+                <button type="submit" class="btn-add-to-cart-final">Publicar Reseña</button>
+                <p id="review-status"></p>
+            </form>
+        </div>
+    </section>
+
+    </div>
+    
+    <script src="./script/script.js"></script> 
+    <script src="./script/product_detail.js"></script> 
+</body>
+</html>

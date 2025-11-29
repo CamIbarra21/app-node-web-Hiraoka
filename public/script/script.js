@@ -13,18 +13,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const numeroImagen = index + 6;
         card.innerHTML = `
           <div class="product-image-box">
-            <img src="/img/productos/${numeroImagen}.webp" alt="${p.nombre}" 
-                 onerror="this.src='/img/placeholder.png'">
-          </div>
-          <p class="product-name">${p.nombre}</p>
-          <div class="price-info">
-            <div class="online-price-label">PRECIO<br>ONLINE</div>
-            <p class="online-price">S/ ${p.precio}</p>
-          </div>
-          <form action="/comprar.html?id=${p._id}" method="POST">
-            <button type="submit" class="btn-add-to-cart">Comprar</button>
-          </form>
-        `;
+                  <img src="/img/productos/${numeroImagen}.webp" alt="${p.nombre}" 
+                          onerror="this.src='/img/placeholder.png'">
+              </div>
+              <p class="product-name">${p.nombre}</p>
+              <div class="price-info">
+                    <div class="online-price-label">PRECIO<br>ONLINE</div>
+                    <p class="online-price">S/ ${p.precio}</p>
+                  </div>
+                  
+                  <a href="./producto.html?id=${p._id}" class="btn-add-to-cart">
+                      Ver Producto
+                  </a>
+              `;
         grid.appendChild(card);
       });
     } catch (err) {
